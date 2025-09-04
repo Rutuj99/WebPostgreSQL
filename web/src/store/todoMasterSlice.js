@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getTodoMasterData, addUpdateDeleteTodoMasterData } from '../../services/todoMasterService';
+import { getTodoMasterData, addUpdateDeleteTodoMasterData } from '../services/todoMasterService';
 
 const initialState = {
   todoMasterData: [],
