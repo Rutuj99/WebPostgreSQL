@@ -1,6 +1,7 @@
 const todoMasterDataService = require('../services/todoMasterDataService');
 
 const TodoMasterController = {
+    
     getTodoMasterData: async (req, res) => {
         try {
             const { pageIndex = 0, pageSize = 10, searchParam = '' } = req.query;
@@ -22,6 +23,7 @@ const TodoMasterController = {
     addUpdateDeleteTodoMasterData: async (req, res) => {
         try {
             const { action, ...todoData } = req.body;
+            console.log(req.body,"--->")
             const result = await todoMasterDataService.addUpdateDeleteTodoMasterData(action, todoData);
             return res.status(200).json({ success: true, message: result });
         } catch (error) {

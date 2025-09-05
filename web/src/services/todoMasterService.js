@@ -22,9 +22,11 @@ export const getTodoMasterData = async (pageIndex = 0, pageSize = 10, searchPara
 
 export const addUpdateDeleteTodoMasterData = async (todoData) => {
   try {
-    const response = await api.post('/addUpdateDeleteTodoMasterData', todoData);
+    console.log("---5",todoData)
+    const response = await api.post('http://localhost:5000/api/addUpdateDeleteTodoMasterData', todoData);
     return response.data;
   } catch (error) {
+    console.log("------------------------->>>>>>>>>>>>",error)
     throw error;
   }
 };

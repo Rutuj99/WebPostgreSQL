@@ -5,21 +5,18 @@ CREATE OR REPLACE FUNCTION public.fo_get_todo_masterdata_list(
 )
 RETURNS TABLE(todomasterlist json)
 LANGUAGE plpgsql
-COST 100
-VOLATILE PARALLEL UNSAFE
-ROWS 1000
 AS $BODY$
 BEGIN
     IF (pageindex IS NOT NULL AND pagesize IS NOT NULL) THEN
-        pageindex := (pagesize * (pageindex));
+        pageindex := (pagesize * pageindex);
     END IF;
-    
+
     IF (searchparamvalue IS NOT NULL AND (SELECT position(' ' in searchparamvalue)) > 0) THEN
         searchparamvalue := trim(regexp_replace(searchparamvalue, '\s+', '%', 'g'));
     END IF;
 
     RETURN QUERY
-    SELECT array_to_json(array_agg(row_to_json(TodoMasterData)))
+    SELECT json_agg(row_to_json(t))  -- aggregate after subquery
     FROM (
         SELECT 
             (ROW_NUMBER() OVER() :: INTEGER) AS rownumber,
@@ -36,13 +33,13 @@ BEGIN
             (COALESCE(TM."TodoTitle",'') || ' ' || COALESCE(TM."TodoDescription",'')) AS searchtext
         FROM public."TODO_Master" TM
         WHERE TM."Status" = B'1'
-    ) AS TodoMasterData
+    ) t
     WHERE (
         searchparamvalue IS NULL 
         OR searchparamvalue = '' 
-        OR TodoMasterData.searchtext ILIKE '%' || searchparamvalue || '%'
+        OR t.searchtext ILIKE '%' || searchparamvalue || '%'
     )
-    ORDER BY TodoMasterData."TodoId" DESC
+    ORDER BY t."TodoId" DESC
     OFFSET pageindex LIMIT pagesize;
 END;
 $BODY$;

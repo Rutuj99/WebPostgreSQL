@@ -13,6 +13,7 @@ const todoMasterDataService = {
     },
 
     addUpdateDeleteTodoMasterData: async (action, data) => {
+        console.log(data,"data-->")
         try {
             const query = 'SELECT fo_insert_update_delete_todomasterdata($1, $2, $3, $4, $5, $6, $7) as result';
             const values = [
@@ -25,6 +26,7 @@ const todoMasterDataService = {
                 data.updatedBy || null
             ];
             const result = await pool.query(query, values);
+             console.log(result,"dataResult-->")
             return result.rows[0].result;
         } catch (error) {
             throw error;
