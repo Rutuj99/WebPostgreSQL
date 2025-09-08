@@ -4,10 +4,13 @@ const todoMasterDataService = {
     getTodoMasterData: async (pageIndex = 0, pageSize = 10, searchParam = '') => {
         try {
             const query = 'SELECT * FROM fo_get_todo_masterdata_list($1, $2, $3)';
+            console.log(query,"query ")
             const values = [pageIndex, pageSize, searchParam];
             const result = await pool.query(query, values);
+            console.log("inside -3 ")
             return result.rows[0]?.todomasterlist || [];
         } catch (error) {
+             console.log("inside -3 eror ")
             throw error;
         }
     },

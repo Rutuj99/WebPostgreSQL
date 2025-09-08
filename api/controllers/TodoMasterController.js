@@ -10,8 +10,11 @@ const TodoMasterController = {
                 parseInt(pageSize),
                 searchParam
             );
+
+            console.log("inside-1")
             return res.status(200).json({ success: true, data: todoData });
         } catch (error) {
+              console.log("inside-1-error")
             return res.status(500).json({ 
                 success: false, 
                 message: 'Error fetching todo data',

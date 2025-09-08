@@ -16,11 +16,8 @@ BEGIN
     END IF;
 
     RETURN QUERY
-    SELECT json_agg(row_to_json(t))  -- aggregate after subquery
-    FROM (
+    WITH base AS (
         SELECT 
-            (ROW_NUMBER() OVER() :: INTEGER) AS rownumber,
-            (COUNT(*) OVER() :: INTEGER) AS totalresultcount,
             TM."TodoId",
             COALESCE(TM."TodoTitle",'N/A') AS "TodoTitle",
             COALESCE(TM."TodoDescription",'N/A') AS "TodoDescription", 
@@ -33,13 +30,28 @@ BEGIN
             (COALESCE(TM."TodoTitle",'') || ' ' || COALESCE(TM."TodoDescription",'')) AS searchtext
         FROM public."TODO_Master" TM
         WHERE TM."Status" = B'1'
-    ) t
-    WHERE (
-        searchparamvalue IS NULL 
-        OR searchparamvalue = '' 
-        OR t.searchtext ILIKE '%' || searchparamvalue || '%'
+    ),
+    filtered AS (
+        SELECT * FROM base
+        WHERE (
+            searchparamvalue IS NULL 
+            OR searchparamvalue = '' 
+            OR base.searchtext ILIKE '%' || searchparamvalue || '%'
+        )
+    ),
+    numbered AS (
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY "TodoId" DESC) AS rownumber,
+            COUNT(*) OVER () AS totalresultcount,
+            f.*
+        FROM filtered f
     )
-    ORDER BY t."TodoId" DESC
-    OFFSET pageindex LIMIT pagesize;
+    SELECT COALESCE(json_agg(row_to_json(n)), '[]'::json) AS todomasterlist
+    FROM (
+        SELECT *
+        FROM numbered
+        ORDER BY "TodoId" DESC
+        OFFSET pageindex LIMIT pagesize
+    ) n;
 END;
 $BODY$;
