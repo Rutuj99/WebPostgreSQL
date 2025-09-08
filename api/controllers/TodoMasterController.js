@@ -1,6 +1,7 @@
 const todoMasterDataService = require('../services/todoMasterDataService');
 
 const TodoMasterController = {
+    
     getTodoMasterData: async (req, res) => {
         try {
             const { pageIndex = 0, pageSize = 10, searchParam = '' } = req.query;
@@ -9,8 +10,11 @@ const TodoMasterController = {
                 parseInt(pageSize),
                 searchParam
             );
+
+            console.log("inside-1")
             return res.status(200).json({ success: true, data: todoData });
         } catch (error) {
+              console.log("inside-1-error")
             return res.status(500).json({ 
                 success: false, 
                 message: 'Error fetching todo data',
@@ -22,6 +26,7 @@ const TodoMasterController = {
     addUpdateDeleteTodoMasterData: async (req, res) => {
         try {
             const { action, ...todoData } = req.body;
+            console.log(req.body,"--->")
             const result = await todoMasterDataService.addUpdateDeleteTodoMasterData(action, todoData);
             return res.status(200).json({ success: true, message: result });
         } catch (error) {

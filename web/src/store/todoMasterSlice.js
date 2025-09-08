@@ -23,6 +23,7 @@ export const fetchTodoMasterData = createAsyncThunk(
 export const addUpdateDeleteTodo = createAsyncThunk(
   'todoMaster/addUpdateDeleteTodo',
   async (todoData) => {
+    console.log("--3",todoData);
     const response = await addUpdateDeleteTodoMasterData(todoData);
     return response;
   }

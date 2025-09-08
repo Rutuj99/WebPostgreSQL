@@ -34,6 +34,7 @@ const TodoForm = ({ todo, onSubmit, onCancel }) => {
       createdBy: todo ? undefined : 'User',
       updatedBy: todo ? 'User' : undefined,
     };
+    console.log(submitData,"submit data--->")
 
     if (todo) {
       submitData.todoId = todo.TodoId;
