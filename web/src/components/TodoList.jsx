@@ -55,6 +55,8 @@ const TodoList = () => {
   };
 
   const handleFormSubmit = async (todoData) => {
+
+    console.log("-->2",todoData);
     await dispatch(addUpdateDeleteTodo(todoData));
     setShowForm(false);
     dispatch(fetchTodoMasterData({ 
